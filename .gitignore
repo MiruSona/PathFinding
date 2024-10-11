@@ -33,10 +33,11 @@
 
 # Unity
 *.csproj
-*.sln
+# *.sln
 *.vs
 *.vsconfig
 .idea
+
 Library
 Logs
 Temp
