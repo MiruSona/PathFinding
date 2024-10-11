@@ -18,7 +18,8 @@ namespace FastPathFinder
 
         //Data
         public readonly Vector2 Size;
-        public readonly Vector2 WorldPosition;
+        public readonly Vector2 World2DPosition;
+        public readonly Vector3 WorldPosition;
         public readonly Vector2Int TilePostion;
 
         //Occupy
@@ -27,12 +28,13 @@ namespace FastPathFinder
         public string OnPathUID { get; private set; }   //이 타일을 길로 사용하는 대상 UID
 
         #region Init & Dispose
-        public TileData(int index, int mapId, Vector2 size, Vector2 worldPosition, Vector2Int tilePosition)
+        public TileData(int index, int mapId, Vector2 size, Vector2 world2DPosition, Vector2Int tilePosition)
         {
             Index = index;
             MapId = mapId;
             Size = size;
-            WorldPosition = worldPosition;
+            World2DPosition = world2DPosition;
+            WorldPosition = new Vector3(world2DPosition.x, 0f, world2DPosition.y);
             TilePostion = tilePosition;
         }
 

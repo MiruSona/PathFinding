@@ -34,12 +34,9 @@ namespace FastPathFinder
         public BitFlagMap BitTileMap => _bitTileMap;
 
         #region Init & Dispose
+        //Row/Colum 으로 초기화
         public TileMapData(int row, int column, Vector3 center, Vector3 leftBottom, Vector3 rightTop)
         {
-            Row = row;
-            Column = column;
-            TotalTileCount = row * column;
-
             //위치값 - 평면이라 z값이 y값이됨
             Center = new Vector2(center.x, center.z);
             LeftBottom = new Vector2(leftBottom.x, leftBottom.z);
@@ -49,15 +46,21 @@ namespace FastPathFinder
 
             //맵 크기
             MapSize = Vector2.zero;
-            MapSize.x = rightTop.x - leftBottom.x;
-            MapSize.y = rightTop.y - leftBottom.y;
+            MapSize.x = RightTop.x - LeftBottom.x;
+            MapSize.y = RightTop.y - LeftBottom.y;
 
             //타일 크기
             TileSize = Vector2.zero;
             TileSize.x = MapSize.x / (float)column;
             TileSize.y = MapSize.y / (float)row;
 
+            //Row / Column / Total
+            Row = row;
+            Column = column;
+            TotalTileCount = row * column;
+
             //각 타일 Index/MapId/월드 위치/타일 위치 지정
+            int currentRow = 0;
             var tileSizeHalf = TileSize * 0.5f;
             Vector2 worldPosition = LeftBottom + tileSizeHalf;
             Vector2Int tilePosition = Vector2Int.zero;
@@ -74,18 +77,82 @@ namespace FastPathFinder
                     _firstTileWorldPosition = worldPosition;
 
                 //위치 계산
-                if (index != 0 && (index % column == 0))
+                int newRow = (index + 1) / column;
+                if (currentRow != newRow)
                 {
-                    worldPosition.x = leftBottom.x + tileSizeHalf.x;
-                    worldPosition.y += tileSizeHalf.y;
+                    worldPosition.x = LeftBottom.x + tileSizeHalf.x;
+                    worldPosition.y += TileSize.y;
 
                     tilePosition.x = 0;
                     ++tilePosition.y;
+
+                    currentRow = newRow;
                 }
                 else
                 {
-                    worldPosition.x += tileSizeHalf.x;
+                    worldPosition.x += TileSize.x;
+                    ++tilePosition.x;
+                }
+            }
 
+            TileDatas = _tileDatas;
+        }
+
+        //TileSize로 초기화
+        public TileMapData(Vector2 tileSize, Vector3 center, Vector3 leftBottom, Vector3 rightTop)
+        {
+            //위치값 - 평면이라 z값이 y값이됨
+            Center = new Vector2(center.x, center.z);
+            LeftBottom = new Vector2(leftBottom.x, leftBottom.z);
+            RightTop = new Vector2(rightTop.x, rightTop.z);
+            LeftTop = new Vector2(LeftBottom.x, RightTop.y);
+            RightBottom = new Vector2(RightTop.x, LeftBottom.y);
+
+            //맵 크기
+            MapSize = Vector2.zero;
+            MapSize.x = RightTop.x - LeftBottom.x;
+            MapSize.y = RightTop.y - LeftBottom.y;
+
+            //타일 크기
+            TileSize = tileSize;
+
+            //Row / Column / Total
+            Row = Mathf.FloorToInt(MapSize.x / tileSize.x);
+            Column = Mathf.FloorToInt(MapSize.y / tileSize.y);
+            TotalTileCount = Row * Column;
+
+            //각 타일 Index/MapId/월드 위치/타일 위치 지정
+            int currentRow = 0;
+            var tileSizeHalf = TileSize * 0.5f;
+            Vector2 worldPosition = LeftBottom + tileSizeHalf;
+            Vector2Int tilePosition = Vector2Int.zero;
+            for (int index = 0; index < TotalTileCount; ++index)
+            {
+                //Tile좌표를 단일값으로 저장 -> x + (y * column)
+                int mapId = tilePosition.x + tilePosition.y * Column;
+                TileData newTile = new TileData(index, mapId, TileSize, worldPosition, tilePosition);
+
+                _tileDatas.Add(newTile);
+                _tileDataMapIds.Add(mapId);
+
+                if (index == 0)
+                    _firstTileWorldPosition = worldPosition;
+
+                //위치 계산
+                int newRow = (index + 1) / Column;
+                if (currentRow != newRow)
+                {
+                    worldPosition.x = LeftBottom.x + tileSizeHalf.x;
+                    worldPosition.y += TileSize.y;
+
+                    tilePosition.x = 0;
+                    ++tilePosition.y;
+
+                    currentRow = newRow;
+                }
+                else
+                {
+                    worldPosition.x += TileSize.x;
                     ++tilePosition.x;
                 }
             }
