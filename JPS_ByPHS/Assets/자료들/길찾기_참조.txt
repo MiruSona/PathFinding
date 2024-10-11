@@ -1,0 +1,13 @@
+1. JPS+ & Global Bounding
+- 원본(GDC) : https://www.gdcvault.com/play/1022094/JPS-Over-100x-Faster-than
+- 설명1(JPS) : https://game-dev.tistory.com/13
+- 설명2(JPS) : https://blog.naver.com/robo813/221332759727
+- 설명3(JPS) : https://joonleestudio.tistory.com/28
+- 설명4(JPS+) : https://m.blog.naver.com/robo813/221341534052
+
+3. JPS(B)
+- 원본(유투브) : https://www.youtube.com/watch?v=rfOgaPXCADQ&t=132s
+- Github : https://github.com/gamephysics/JPS_B
+
+3. Implementing good group Pathfinding for RTS Games
+- 원본(유투브) : https://www.youtube.com/watch?v=nfgT-wT0fQI
