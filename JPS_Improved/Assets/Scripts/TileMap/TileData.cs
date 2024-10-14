@@ -5,9 +5,10 @@ namespace FastPathFinder
     public enum Type_Occupy
     {
         Empty = 0,
-        Obstacle,
         Ally,
         Enemy,
+        Obstacle,
+        Terrain,
     }
 
     public class TileData
@@ -17,9 +18,10 @@ namespace FastPathFinder
         public readonly int MapId;  //Tile좌표를 단일값으로 저장 -> x + (y * column)
 
         //Data
-        public readonly Vector2 Size;
-        public readonly Vector2 World2DPosition;
-        public readonly Vector3 WorldPosition;
+        public readonly Vector2 Size2D;
+        public readonly Vector3 Size3D;
+        public readonly Vector2 WorldPosition2D;
+        public readonly Vector3 WorldPosition3D;
         public readonly Vector2Int TilePostion;
 
         //Occupy
@@ -28,13 +30,14 @@ namespace FastPathFinder
         public string OnPathUID { get; private set; }   //이 타일을 길로 사용하는 대상 UID
 
         #region Init & Dispose
-        public TileData(int index, int mapId, Vector2 size, Vector2 world2DPosition, Vector2Int tilePosition)
+        public TileData(int index, int mapId, Vector3 size, Vector3 worldPosition, Vector2Int tilePosition)
         {
             Index = index;
             MapId = mapId;
-            Size = size;
-            World2DPosition = world2DPosition;
-            WorldPosition = new Vector3(world2DPosition.x, 0f, world2DPosition.y);
+            Size3D = size;
+            Size2D = new Vector2(size.x, size.z);
+            WorldPosition3D = worldPosition;
+            WorldPosition2D = new Vector2(worldPosition.x, worldPosition.z);
             TilePostion = tilePosition;
         }
 
